@@ -1,53 +1,52 @@
-# Lossfunc
+# GWN Anomaly Prediction
 
-Event/anomaly detection experiments comparing loss functions (BCE, hinge, squared hinge, focal, and weighted variants of each) across three models (LSTM, MLP, TCN, STGNN).
+Source code, experiment configurations, and supplementary material accompanying the paper:
 
-## Setup
+> Du Plessis, M. C., Scharler, J., & Moodley, D.
+>
+> **Applying Spatial-Temporal Graph Neural Networks for Anomaly Prediction in a Mineral Processing Plant**
 
-```bash
-pip install -r requirements.txt
-```
+## Archived Release
 
-`requirements.txt` pins `torch` to the CPU/CUDA-agnostic version used in development; install a build matching your own CUDA setup if needed (see the comment in that file).
+A permanent archived version of this repository is available on Zenodo:
 
-## Running an experiment
+https://doi.org/10.5281/zenodo.21967028
 
-```bash
-python3 main.py --model LSTM --dataset lossfunc_SWATds.csv --horizon 1 --device cuda:0 --node_cnt 26
-```
+The Zenodo record provides a citable, immutable snapshot of the source code, experiment configurations, and supplementary material associated with the publication.
 
-Key flags (see [config.py](config.py) for the full list):
+## Overview
 
-- `--model`: `LSTM`, `MLP`, `TCN`, or `STGNN`
-- `--dataset`: base name (no `data/` prefix, no `.csv` extension) of a file under `data/`
-- `--loss_fn`: which loss function to train with (see below)
-- `--run_pipeline`: run a fresh experiment grid (default `True`); set to `False` to instead load and re-aggregate a previously saved `results/<model>/results.pickle`
-- `--walk_forward`: use walk-forward validation instead of a single train/valid/test split
+This repository contains the implementation and experimental framework used to evaluate anomaly prediction in industrial time-series data from a mineral processing plant.
 
-Each run explores a small hyperparameter grid (defined in `main.py` via `ConfigSpace`; note the epoch choices there are currently hardcoded rather than driven by `--epoch`) and writes:
-- `results/<model>/results.pickle` — the raw experiment results
-- `results/<model>/runs_summary_*.csv` — a flattened per-run summary (via `utils/utils.py:export_runs_to_csv`)
+The study evaluates Graph WaveNet (GWN) for anomaly prediction and compares its performance against established deep learning baselines, including:
 
-## Loss functions
+- Long Short-Term Memory (LSTM)
+- Temporal Convolutional Networks (TCN)
+- Multi-Layer Perceptrons (MLP)
 
-Implemented in [losses.py](losses.py) and dispatched by name in `utils/train.py`/`utils/validation.py` via `--loss_fn`:
+The repository also includes implementations of the weighted loss functions proposed by Du Plessis and Moodley (2025) and evaluates their effectiveness within a spatial-temporal graph learning framework.
 
-- `bce`, `pbce` — (weighted) binary cross-entropy variants
-- `hinge`, `squared_hinge` — hinge-loss variants, plus weighted (`w...`) forms
-- `wbce`, `wpbce`, `whinge`, `wsquared_hinge` — label/positive-weighted variants (accept `--alpha0`/`--alpha1`)
-- `focal` — focal loss (`--focal_alpha`, `--focal_gamma`)
+### Evaluated Loss Functions
 
-## Project layout
+- BCE
+- PBCE
+- WBCE
+- Focal Loss
+- WPBCE
+- WHinge
+- WSqHinge
 
-```
-main.py                  Entry point: builds the ConfigSpace grid and runs the experiment
-config.py                Command-line argument definitions
-model_managers.py        classificationManager: wires preprocessing/train/validate/test together
-losses.py                Loss function implementations
-models/                  Model architectures (LSTM, MLP, TCN, STGNN)
-utils/                   Training/validation/testing loops, CSV export, and a small
-                         vendored experiment-tracking framework (results.py, manager.py,
-                         experiment.py, pickl_mixin.py)
-user_preprocessing/      Vendored data loading/preprocessing utilities
-data/                    Datasets (CSV)
-```
+## Repository Contents
+
+```text
+.
+├── models/
+├── utils/
+├── user_preprocessing/
+├── supplementary/
+│   └── SACAIR2026_GWN_for_anomaly_prediction (supplementary).pdf
+├── main.py
+├── losses.py
+├── config.py
+├── requirements.txt
+└── README.md
