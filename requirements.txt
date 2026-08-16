@@ -1,0 +1,6 @@
+torch==2.11.0  # built with CUDA 13.0 (cu130) in the reference environment; install a build matching your own CUDA/CPU setup
+pandas==2.3.3
+numpy==2.2.6
+ConfigSpace==1.2.2
+tqdm==4.67.3
+scipy==1.15.3
